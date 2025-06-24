@@ -1,8 +1,18 @@
-import axios from "axios";
-import NavBar from "../../temp/NavBar";
+import NavBar from "../../components/NavBar";
+import { categoryGroupApi } from "../../api/categoryGroupApi";
 
 const CategoryGroup = () => {
-  const token = localStorage.getItem("jwt");
+  const categoryGroupId = 1;
+
+  const getCategoryGroup = async () => {
+    const data = await categoryGroupApi.get(categoryGroupId);
+    console.log(data);
+  };
+
+  const getCategoryGroupList = async () => {
+    const data = await categoryGroupApi.list();
+    console.log(data);
+  };
 
   const postCategoryGroup = async () => {
     const params = {
@@ -10,11 +20,8 @@ const CategoryGroup = () => {
       categoryType: "INCOME",
       imageUrl: "/",
     };
-    const data = await axios.post("http://localhost:8080/api/category-group", params, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+
+    const data = await categoryGroupApi.post(params);
     console.log(data);
   };
 
@@ -24,25 +31,20 @@ const CategoryGroup = () => {
       categoryType: "INCOME",
       imageUrl: "/1",
     };
-    const categoryGroupId = 1;
-    const data = await axios.put(`http://localhost:8080/api/category-group/${categoryGroupId}`, params, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+
+    const data = await categoryGroupApi.put(categoryGroupId, params);
+    console.log(data);
   };
 
   const deleteCategoryGroup = async () => {
-    const categoryGroupId = 1;
-    await axios.delete(`http://localhost:8080/api/category-group/${categoryGroupId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await await categoryGroupApi.delete(categoryGroupId);
   };
 
   return (
     <div>
+      <h1>카테고리</h1>
+      <button onClick={getCategoryGroup}>카테고리 조회</button>
+      <button onClick={getCategoryGroupList}>카테고리 목록 조회</button>
       <button onClick={postCategoryGroup}>카테고리 그룹 생성</button>
       <button onClick={updateCategoryGroup}>카테고리 그룹 수정</button>
       <button onClick={deleteCategoryGroup}>카테고리 그룹 삭제</button>
