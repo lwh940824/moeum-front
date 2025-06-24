@@ -1,3 +1,4 @@
+import type { AxiosResponse } from "axios";
 import axios from "axios";
 
 const api = axios.create({
@@ -11,6 +12,14 @@ api.interceptors.request.use(
 
     return config;
   },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  //TODO: 타입 제대로 지정해줘야함 지금은 임시
+  (response) => (response as AxiosResponse).data,
   (error) => {
     return Promise.reject(error);
   }

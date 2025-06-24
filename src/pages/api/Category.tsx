@@ -60,6 +60,8 @@ const Category = () => {
 
   return (
     <div>
+      <h1>카테고리</h1>
+      <br></br>
       <button onClick={getCategory}>카테고리 조회</button>
       <button onClick={getCategoryList}>카테고리 목록 조회</button>
       <button onClick={postCategory}>카테고리 그룹 생성</button>

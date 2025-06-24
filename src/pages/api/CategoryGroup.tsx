@@ -2,7 +2,7 @@ import NavBar from "../../components/NavBar";
 import { categoryGroupApi } from "../../api/categoryGroupApi";
 
 const CategoryGroup = () => {
-  const categoryGroupId = 1;
+  const categoryGroupId = 2;
 
   const getCategoryGroup = async () => {
     const data = await categoryGroupApi.get(categoryGroupId);
@@ -42,7 +42,8 @@ const CategoryGroup = () => {
 
   return (
     <div>
-      <h1>카테고리</h1>
+      <h1>카테고리 그룹</h1>
+      <br></br>
       <button onClick={getCategoryGroup}>카테고리 조회</button>
       <button onClick={getCategoryGroupList}>카테고리 목록 조회</button>
       <button onClick={postCategoryGroup}>카테고리 그룹 생성</button>

@@ -43,6 +43,7 @@ const Payment = () => {
   return (
     <div>
       <h1>결제수단</h1>
+      <br></br>
       <button onClick={getCategoryGroup}>결제수단 조회</button>
       <button onClick={getCategoryGroupList}>결제수단 목록 조회</button>
       <button onClick={postCategoryGroup}>결제수단 그룹 생성</button>
