@@ -50,6 +50,8 @@ const CategoryGroup = () => {
         <input name="imageUrl" value={form.imageUrl} onChange={handleChange} />
       </form>
 
+      <br></br>
+
       <button onClick={getCategoryGroup}>카테고리 조회</button>
       <button onClick={getCategoryGroupList}>카테고리 목록 조회</button>
       <button onClick={postCategoryGroup}>카테고리 그룹 생성</button>
