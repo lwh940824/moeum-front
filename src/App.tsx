@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import CategoryGroup from "./pages/api/CategoryGroup";
 import Category from "./pages/api/Category";
 import Payment from "./pages/api/Payment";
+import Icon from "./pages/api/Icon";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/categoryGroup" element={<CategoryGroup />} />
         <Route path="/category" element={<Category />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/icon" element={<Icon />} />
       </Routes>
     </Router>
   );
