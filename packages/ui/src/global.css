@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "tailwindcss";
+
+/* ui 공통 스타일 */
+:root {
+    --brand-color: #2276fc;
+}
