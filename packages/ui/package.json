@@ -6,7 +6,10 @@
   "types": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./utils/cn": "./src/utils/cn.ts"
+    "./utils/cn": "./src/utils/cn.ts",
+    "./styles": {
+      "default": "./src/index.css"
+    }
   },
   "scripts": {
     "build": "echo \"Error: no test specified\" && exit 1"
