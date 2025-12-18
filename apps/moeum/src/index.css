@@ -7,3 +7,8 @@
 
 /* ui 토큰 */
 @import "@moeum/ui/styles";
+
+
+:root {
+    color: black;
+}

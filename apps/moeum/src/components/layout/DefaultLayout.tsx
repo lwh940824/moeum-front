@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import LeftMenu from "./LeftMenu";
 import { Button } from "@moeum/ui";
 
@@ -16,10 +17,11 @@ export default function DefaultLayout() {
                 <Button>
                     TEST
                 </Button>
-                <Button variant="outline">저장</Button>
+                <Button variant="outline">TEST</Button>
                 <br />
                 <div className="p-10 bg-blue-500">BOX</div>
                 <div className="test-tailwind">TEST</div>
+                <Outlet />
             </main>
         </div>
     )
