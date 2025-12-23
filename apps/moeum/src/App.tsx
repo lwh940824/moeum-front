@@ -12,6 +12,7 @@ function App() {
         {/* <Route path='/login' element={<Login />} /> */}
 
         <Route element={<DefaultLayout />}>
+          <Route path="/" element={<Category />}></Route>
         </Route>
 
         <Route element={<DefaultLayout />}>

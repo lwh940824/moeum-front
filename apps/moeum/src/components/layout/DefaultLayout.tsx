@@ -1,24 +1,30 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import LeftMenu from "./LeftMenu";
-import { Button } from "@moeum/ui";
+import { Button, Sidebar, SidebarProvider } from "@moeum/ui";
+import {AArrowDown} from "lucide-react"
 
 export default function DefaultLayout() {
     const [open, setOpen] = useState(true);
 
     return (
-        <div className="flex">
-            <aside className={`fixed inset-y-0 left-0 z-30 w-64 bg-gray-900
-          transform transition-transform duration-300 ease-in-out
-          ${open ? "translate-x-0" : "-translate-x-full"}`}>
-                <LeftMenu setOpen={setOpen} />
-            </aside>
-            <main className="w-full">
-                <Button>
-                    TEST
+        <div>
+            <SidebarProvider>
+                <Sidebar>{/* 사이드바 내용 */}</Sidebar>
+            </SidebarProvider>
+            
+            <main className="">
+                <Button size="default">
+                    <div>테스트</div>
                 </Button>
-                <Button variant="outline">TEST</Button>
+                <Button variant="submit" size="sm">
+                    SUBMIT
+                </Button>
+                <Button variant="danger" size="sm">
+                    DANGER
+                </Button>
+                <Button size="lg"><AArrowDown/>TsEST</Button>
                 <br />
+
                 <div className="p-10 bg-blue-500">BOX</div>
                 <div className="test-tailwind">TEST</div>
                 <Outlet />

@@ -7,6 +7,7 @@
         "strict": true,
         "skipLibCheck": true,
         "baseUrl": ".",
+        "forceConsistentCasingInFileNames": true, // 파일명 대소문자 구분
         "paths": {
             "@/*": [
                 "src/*"

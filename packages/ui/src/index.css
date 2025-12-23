@@ -1,9 +1,71 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
+  --color-foreground: white;
+
   /* Brand colors */
-  --color-primary: oklch(0.62 0.18 145);
+  --color-primary: oklch(0.6912 0.1406 205.41);
   --color-primary-hover: oklch(0.58 0.18 145);
   --color-primary-foreground: white;
+
+  --color-submit: oklch(0.5415 0.1554 259.41);
+  --color-submit-hover: oklch(0.63 0.13 158.82);
+  --color-submit-foreground: white;
+
+  --color-danger: oklch(0.6324 0.1875 4.81);
+  --color-danger-hover: oklch()
+
+  --opacity-hover: 0.9;   /* hover는 75%로 살짝 눌림 */
+  --opacity-active: 0.75;   /* active는 90% */
 }
 
+@layer base {
+
+  /* Button 버튼 base */
+  button {
+    transition: opacity 150ms ease;
+  }
+
+  button:hover:not(:disabled) {
+    opacity: var(--opacity-hover);
+  }
+
+  button:active:not(:disabled) {
+    opacity: var(--opacity-active);
+  }
+}
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}

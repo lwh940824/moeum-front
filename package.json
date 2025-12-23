@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev:moeum": "pnpm --filter moeum dev",
+    "storybook": "pnpm --filter @moeum/ui run storybook",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
