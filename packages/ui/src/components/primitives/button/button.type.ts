@@ -1,9 +1,9 @@
-type ButtonBaseProps = {
-    variant?: Variant;
-    size?: Size;
-    shape?: Shape;
-    className?: string;
-}
+import { VariantProps } from "class-variance-authority";
+import { buttonVariants } from "./button";
+
+type ButtonBaseProps = 
+    VariantProps<typeof buttonVariants> &
+    { className?: string; }
 
 type ButtonAsButton = 
     ButtonBaseProps & 
