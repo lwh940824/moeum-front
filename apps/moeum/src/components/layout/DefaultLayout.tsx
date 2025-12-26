@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { Button, Sidebar, SidebarProvider } from "@moeum/ui";
-import {AArrowDown} from "lucide-react"
+import { Button, Input, Sidebar, SidebarProvider } from "@moeum/ui";
+import {AArrowDown, Settings} from "lucide-react"
 
 export default function DefaultLayout() {
     const [open, setOpen] = useState(true);
 
     return (
         <div>
-            <SidebarProvider>
-                <Sidebar>{/* 사이드바 내용 */}</Sidebar>
-            </SidebarProvider>
+            {/* <SidebarProvider>
+                <Sidebar></Sidebar>
+            </SidebarProvider> */}
             
             <main className="">
                 <Button size="default">
@@ -22,9 +22,13 @@ export default function DefaultLayout() {
                 <Button variant="danger" size="sm">
                     DANGER
                 </Button>
-                <Button size="lg"><AArrowDown/>TsEST</Button>
+                <Button size="lg"><Settings/>TsEST</Button>
+                <button className="flex items-center justify-center gap-2 h-20 w-20">
+    <Settings/>
+    TEST
+</button>
                 <br />
-
+                <Input />
                 <div className="p-10 bg-blue-500">BOX</div>
                 <div className="test-tailwind">TEST</div>
                 <Outlet />

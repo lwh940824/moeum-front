@@ -6,19 +6,20 @@ import { cn } from "../../../utils/cn"
 import { ButtonProps } from "./button.type"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground",
         submit: "bg-submit text-submit-foreground",
         danger: "bg-danger text-foreground",
+        ghost: "bg-transparent",
       },
       size: {
-        default: "h-10 px-4 py-2 text-lg",
-        sm: "h-9 px-3 text-sm",
-        lg: "h-11 px-8 text-xl",
-        icon: "h-10 w-10",
+        sm: "h-8 px-3 text-sm [&_svg]:size-4",
+        default: "h-9 px-4 py-1 has-[>svg]:px-3",
+        lg: "h-10 px-8 py-2 has-[>svg]:px-5",
+        icon: "h-10 w-10 [&_svg]:size-6",
       },
       shape: {
         default: "rounded-md",
