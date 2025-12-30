@@ -10,7 +10,7 @@ body {
 
 
 @theme {
-  --color-foreground: white;
+  --color-foreground: black;
 
   /* Brand colors */
   --color-primary: oklch(0.6912 0.1406 205.41);
@@ -22,30 +22,42 @@ body {
   --color-submit-foreground: white;
 
   --color-danger: oklch(0.6324 0.1875 4.81);
-  --color-danger-hover: oklch()
+  --color-danger-hover: oklch() --opacity-hover: 0.9;
 
-  --opacity-hover: 0.9;   /* hover는 75%로 살짝 눌림 */
-  --opacity-active: 0.75;   /* active는 90% */
+  --color-hover: hsla(0, 0%, 18%, 0.077);
+
+  /* hover는 75%로 살짝 눌림 */
+  /* active는 90% */
+  --opacity-active: 0.75;
+  --opacity-hover: 0.75;
 }
 
 @layer base {
 
-  /* Button 버튼 base */
-  button {
+  /* Button, Input base */
+  button,
+  input {
     transition: opacity 150ms ease;
   }
 
-  button:hover:not(:disabled) {
+  /* button:hover:not(:disabled),
+  input:hover:not(:disabled) {
     opacity: var(--opacity-hover);
-  }
+  } */
 
-  button:active:not(:disabled) {
+  button:active:not(:disabled),
+  input:active:not(:disabled) {
     opacity: var(--opacity-active);
   }
 }
 
 :root {
-  --sidebar: hsl(0 0% 98%);
+
+  
+  --border: hsla(0, 0%, 18%, 0.377);
+  --border-strong: hsla(0, 0%, 18%, 0.623);
+
+  --sidebar: hsla(0, 0%, 98%, 0.836);
   --sidebar-foreground: hsl(240 5.3% 26.1%);
   --sidebar-primary: hsl(240 5.9% 10%);
   --sidebar-primary-foreground: hsl(0 0% 98%);
@@ -56,6 +68,9 @@ body {
 }
 
 .dark {
+  --border: hsl(240 4% 26%);
+  --border-strong: hsl(240 4% 33%);
+
   --sidebar: hsl(240 5.9% 10%);
   --sidebar-foreground: hsl(240 4.8% 95.9%);
   --sidebar-primary: hsl(224.3 76.3% 48%);
@@ -67,6 +82,9 @@ body {
 }
 
 @theme inline {
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
