@@ -1,18 +1,18 @@
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarSeparator } from "@moeum/ui";
-import { Settings } from "lucide-react";
+import { File, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@moeum/ui";
 
 export default function AppSidebar() {
     const items = [
         {
-            title: "계산기",
-            url: "/rate-calculator",
-            icon: Settings,
+            title: "카테고리",
+            url: "/category",
+            icon: File,
         },
         {
-            title: "Inbox",
-            url: "#",
+            title: "계산기",
+            url: "/rate-calculator",
             icon: Settings,
         },
         {

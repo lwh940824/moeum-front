@@ -11,6 +11,7 @@ body {
 
 @theme {
   --color-foreground: black;
+  --color-background: white;
 
   /* Brand colors */
   --color-primary: oklch(0.6912 0.1406 205.41);

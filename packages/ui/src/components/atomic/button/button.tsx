@@ -13,7 +13,7 @@ const buttonVariants = cva(
         default: "bg-primary text-primary-foreground",
         submit: "bg-submit text-submit-foreground",
         danger: "bg-danger text-foreground",
-        ghost: "bg-transparent",
+        ghost: "bg-transparent border border-border",
       },
       size: {
         sm: "h-8 px-3 text-sm [&_svg]:size-4",
@@ -41,7 +41,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
-        {...(asChild ? {} : {type: buttonType})}
+        {...(asChild ? {} : { type: buttonType })}
         className={cn(buttonVariants({ variant, size, shape, className }))}
         ref={ref}
         {...props}

@@ -12,11 +12,12 @@ function App() {
         {/* <Route path='/login' element={<Login />} /> */}
 
         <Route element={<DefaultLayout />}>
-          <Route path="/" element={<Category />}></Route>
+          <Route path="/" element={<Category />} />
         </Route>
 
         <Route element={<DefaultLayout />}>
           <Route path="/rate-calculator" element={<RateCalculator />} />
+          <Route path="/category" element={<Category />} />
         </Route>
       </Routes>
     </BrowserRouter>
