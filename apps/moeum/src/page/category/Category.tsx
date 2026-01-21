@@ -3,7 +3,7 @@ import { CategoryApi } from "../../service/api/category";
 
 export default function Category() {
     const createCategory = () => {
-        CategoryApi.createCategory({name: "적금", categoryType: "EXPENSE", imageUrl: ""})
+        CategoryApi.createCategory({name: "적금", categoryType: "EXPENSE", imageUrl: "TEMP", useYn: "Y", investmentYn: "N"})
     }
 
     return (
