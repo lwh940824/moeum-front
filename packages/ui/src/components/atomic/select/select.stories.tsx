@@ -20,8 +20,8 @@ export const Default: Story = {
             <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Select a fruit" />
             </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="apple">Apple</SelectItem>
+            <SelectContent className="flex">
+                <SelectItem className="border border-border w-10 h-10" value="apple">Apple</SelectItem>
                 <SelectItem value="banana">Banana</SelectItem>
                 <SelectItem value="grape">Grape</SelectItem>
                 <SelectItem value="orange">Orange</SelectItem>

@@ -3,7 +3,7 @@ import type { YnType } from "@moeum/api";
 export type CategoryType = "INCOME" | "EXPENSE";
 
 export interface CategoryCreateRequest {
-    parentCategoryId: number;
+    parentCategoryId?: number;
     name: string;
     categoryType: CategoryType;
     imageUrl: string;

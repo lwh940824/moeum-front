@@ -3,7 +3,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 
 import { cn } from "../../../utils/cn"
-import { Button } from "@/components/atomic/button"
+import { Button } from "../../atomic/button"
 
 const Dialog = DialogPrimitive.Root
 
@@ -13,8 +13,14 @@ const DialogTrigger = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof Button>
 >(({ className, variant, size, asChild = false, children, ...props }, ref) => (
-  <DialogPrimitive.Trigger ref={ref} className={cn(className)} {...props} >
-    <Button variant={variant} size={size}>{children}</Button>
+  <DialogPrimitive.Trigger ref={ref} className={cn(className)} {...props} asChild>
+    {asChild ? (
+      children
+    ) : (
+      <Button variant={variant} size={size}>
+        {children}
+      </Button>
+    )}
   </DialogPrimitive.Trigger>
 ))
 DialogTrigger.displayName = DialogPrimitive.Trigger.displayName

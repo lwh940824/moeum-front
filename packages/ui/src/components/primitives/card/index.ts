@@ -1,1 +1,1 @@
-import { Card } from "./card";
+export { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card"
