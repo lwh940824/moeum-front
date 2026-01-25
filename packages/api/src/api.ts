@@ -13,6 +13,10 @@ export const api = {
         const response = await client.put(url, data, config);
         return response.data;
     },
+    patch: async <T>(url: string, data?: object, config?: object): Promise<T> => {
+        const response = await client.patch(url, data, config);
+        return response.data;
+    },
     delete: async <T>(url: string, config?: object): Promise<T> => {
         const response = await client.delete(url, config);
         return response.data;

@@ -1,77 +1,147 @@
-import { Button, Dialog, DialogContent, DialogTrigger, Input, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarInset } from "@moeum/ui";
+import { Button, Input, ToggleGroup, ToggleGroupItem } from "@moeum/ui";
+import { useMemo, useState } from "react";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../service/api/category";
+import { useCreateCategory, useGetCategoryTree } from "../../service/api/category/category.queries";
+import type { CategoryCreateRequest, CategoryResponse, CategoryType } from "../../service/api/category/category.type";
+
+const buildEmptyForm = () => ({
+  name: "",
+  categoryType: "EXPENSE" as CategoryType,
+  imageUrl: "",
+  parentCategoryId: "",
+});
 
 export default function Category() {
-    const createCategory = () => {
-        CategoryApi.createCategory({name: "적금", categoryType: "EXPENSE", imageUrl: "TEMP", useYn: "Y", investmentYn: "N"})
+  const { data, isLoading } = useGetCategoryTree();
+  const createCategory = useCreateCategory();
+  const queryClient = useQueryClient();
+
+  const [form, setForm] = useState(buildEmptyForm());
+
+  const changeCategory = useMutation({
+    mutationFn: (payload: { id: number; useYn: "Y" | "N" }) =>
+      CategoryApi.changeCategory(payload.id, { useYn: payload.useYn }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["category-tree"] });
+    },
+  });
+
+  const grouped = useMemo(() => {
+    const income: CategoryResponse[] = [];
+    const expense: CategoryResponse[] = [];
+
+    (data ?? []).forEach((category) => {
+      if (category.categoryType === "INCOME") {
+        income.push(category);
+      } else {
+        expense.push(category);
+      }
+    });
+
+    return { income, expense };
+  }, [data]);
+
+  const onSubmit = () => {
+    if (!form.name.trim() || !form.imageUrl.trim()) return;
+
+    const payload: CategoryCreateRequest = {
+      name: form.name.trim(),
+      imageUrl: form.imageUrl.trim(),
+      categoryType: form.categoryType,
+    };
+
+    const parentId = Number(form.parentCategoryId);
+    if (!Number.isNaN(parentId) && form.parentCategoryId.trim() !== "") {
+      payload.parentCategoryId = parentId;
     }
 
-    return (
-        <div>
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button>카테고리 추가</Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-[900px] w-full p-0 gap-0 overflow-hidden h-[600px] block">
-                    <SidebarProvider className="max-h-full h-full min-h-0">
-                        <Sidebar collapsible="none" className="bg-gray-100 border-r">
-                            <SidebarContent>
-                                <SidebarGroup>
-                                    <SidebarGroupContent>
-                                        <SidebarMenu>
-                                            {['가계부', '카테고리', '결제수단', '반복 생성', '자산 현황', '투자 현황'].map((item) => (
-                                                <SidebarMenuItem key={item}>
-                                                    <SidebarMenuButton isActive={item === '카테고리'}>
-                                                        <span>{item}</span>
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuItem>
-                                            ))}
-                                        </SidebarMenu>
-                                    </SidebarGroupContent>
-                                </SidebarGroup>
-                            </SidebarContent>
-                        </Sidebar>
+    createCategory.mutate(payload, {
+      onSuccess: () => setForm(buildEmptyForm()),
+    });
+  };
 
-                        <SidebarInset className="max-h-full flex flex-col min-h-0 bg-white">
-                            {/* Main Content */}
-                            <div className="flex-1 flex overflow-hidden">
-                                {/* Deposit Categories */}
-                                <section className="flex-1 border-r p-4 flex flex-col gap-4 min-h-0">
-                                    <div className="text-center font-bold bg-gray-100 py-2 rounded shrink-0">입금 카테고리</div>
-                                    <div className="flex flex-col gap-2 overflow-y-auto flex-1">
-                                        {Array.from({ length: 6 }).map((_, i) => (
-                                            <div key={i} className="border rounded p-3 flex items-center justify-between shadow-sm cursor-pointer hover:bg-gray-50 shrink-0">
-                                                <span>아이콘 / 카테고리명 {i + 1}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </section>
-
-                                {/* Withdrawal Categories */}
-                                <section className="flex-1 p-4 flex flex-col gap-4 min-h-0">
-                                    <div className="text-center font-bold bg-gray-100 py-2 rounded shrink-0">출금 카테고리</div>
-                                    <div className="flex flex-col gap-2 overflow-y-auto flex-1">
-                                        {Array.from({ length: 6 }).map((_, i) => (
-                                            <div key={i} className="border rounded p-3 flex items-center justify-between shadow-sm cursor-pointer hover:bg-gray-50 shrink-0">
-                                                <span>아이콘 / 카테고리명 {i + 1}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </section>
-                            </div>
-
-                            {/* Bottom Action Footer */}
-                            <div className="h-[80px] border-t bg-white p-4 flex items-center gap-2 shrink-0">
-                                <Button variant="ghost" className="w-[100px] border">아이콘</Button>
-                                <Input className="flex-1" placeholder="카테고리명" />
-                                <Button variant="ghost" className="border">입금 / 출금</Button>
-                                <Button variant="ghost" className="border">상위 카테고리</Button>
-                                <Button onClick={createCategory}>추가 / 수정</Button>
-                            </div>
-                        </SidebarInset>
-                    </SidebarProvider>
-                </DialogContent>
-            </Dialog>
+  const renderCategory = (category: CategoryResponse) => (
+    <div key={category.id} className="border rounded p-3 flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <div className="font-medium">{category.name}</div>
+        <Button
+          variant="ghost"
+          className="border"
+          onClick={() => changeCategory.mutate({ id: category.id, useYn: "N" })}
+        >
+          Deactivate
+        </Button>
+      </div>
+      {category.children?.length ? (
+        <div className="pl-4 flex flex-col gap-2">
+          {category.children.map((child) => (
+            <div key={child.id} className="border rounded p-2 flex items-center justify-between">
+              <span>{child.name}</span>
+              <Button
+                variant="ghost"
+                className="border"
+                onClick={() => changeCategory.mutate({ id: child.id, useYn: "N" })}
+              >
+                Deactivate
+              </Button>
+            </div>
+          ))}
         </div>
-    )
+      ) : null}
+    </div>
+  );
+
+  return (
+    <div className="w-full max-w-4xl flex flex-col gap-6">
+      <section className="border rounded p-4 flex flex-col gap-3">
+        <div className="text-lg font-semibold">Create Category</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Input
+            placeholder="Name"
+            value={form.name}
+            onChange={(event) => setForm({ ...form, name: event.target.value })}
+          />
+          <Input
+            placeholder="Image URL"
+            value={form.imageUrl}
+            onChange={(event) => setForm({ ...form, imageUrl: event.target.value })}
+          />
+          <Input
+            placeholder="Parent Category Id (optional)"
+            value={form.parentCategoryId}
+            onChange={(event) =>
+              setForm({ ...form, parentCategoryId: event.target.value })
+            }
+          />
+          <ToggleGroup 
+            type="single"
+            onValueChange={(value) => setForm({ ...form, categoryType: value as CategoryType })}
+          >
+            <ToggleGroupItem value="INCOME">
+              수입
+            </ToggleGroupItem>
+            <ToggleGroupItem value="EXPENSE">
+              지출
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+        <Button onClick={onSubmit} disabled={createCategory.isPending}>
+          Create
+        </Button>
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="border rounded p-4 flex flex-col gap-3">
+          <div className="text-lg font-semibold">Income</div>
+          {isLoading ? <div>Loading...</div> : grouped.income.map(renderCategory)}
+        </div>
+        <div className="border rounded p-4 flex flex-col gap-3">
+          <div className="text-lg font-semibold">Expense</div>
+          {isLoading ? <div>Loading...</div> : grouped.expense.map(renderCategory)}
+        </div>
+      </section>
+    </div>
+  );
 }
+

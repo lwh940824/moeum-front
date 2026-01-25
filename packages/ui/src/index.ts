@@ -4,10 +4,13 @@ export * from "./components/atomic/select"
 export * from "./components/atomic/radioGroup"
 export * from "./components/atomic/passwordInput"
 export * from "./components/atomic/separator"
+export * from "./components/atomic/toggle"
+
 export * from "./components/primitives/card/card"
 export * from "./components/primitives/dataTable"
 export * from "./components/primitives/dialog"
 export * from "./components/primitives/login"
+
 export * from "./components/layout/sidebar/Sidebar"
 export * from "./components/Sheet"
 export * from "./components/Skeleton"

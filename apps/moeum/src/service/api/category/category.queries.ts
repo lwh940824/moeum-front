@@ -17,13 +17,13 @@ export const useGetCategory = (id: number) => {
     })
 }
 
-export const useCreateCategory = (categoryId: number) => {
+export const useCreateCategory = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (category: CategoryCreateRequest) => CategoryApi.createCategory(categoryId, category),
+        mutationFn: (category: CategoryCreateRequest) => CategoryApi.createCategory(category),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['category'] })
+            queryClient.invalidateQueries({ queryKey: ['category-tree'] })
         }
     })
 }
@@ -35,6 +35,7 @@ export const useUpdateCategory = (categoryId: number) => {
         mutationFn: (category: CategoryUpdateRequest) => CategoryApi.updateCategory(categoryId, category),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['category'] })
+            queryClient.invalidateQueries({ queryKey: ['category-tree'] })
         }
     })
 }
@@ -45,7 +46,7 @@ export const useChangeCategory = (categoryId: number) => {
     return useMutation({
         mutationFn: (category: CategoryChangeRequest) => CategoryApi.changeCategory(categoryId, category),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['category'] })
+            queryClient.invalidateQueries({ queryKey: ['category-tree'] })
         }
     })
 }
