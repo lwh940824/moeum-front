@@ -5,6 +5,7 @@ export * from "./components/atomic/radioGroup"
 export * from "./components/atomic/passwordInput"
 export * from "./components/atomic/separator"
 export * from "./components/atomic/toggle"
+export * from "./components/atomic/calendar"
 
 export * from "./components/primitives/card/card"
 export * from "./components/primitives/dataTable"

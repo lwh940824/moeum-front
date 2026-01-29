@@ -13,7 +13,7 @@ const buttonVariants = cva(
         default: "bg-primary text-primary-foreground",
         submit: "bg-submit text-submit-foreground",
         danger: "bg-danger text-foreground",
-        ghost: "bg-transparent border border-border",
+        ghost: "bg-transparent border border-0",
       },
       size: {
         sm: "h-8 px-3 text-sm [&_svg]:size-4",

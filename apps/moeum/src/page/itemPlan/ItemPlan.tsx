@@ -7,36 +7,50 @@ import {
 } from "../../service/api/itemPlan/itemPlan.queries";
 import type { RecurringType } from "../../service/api/itemPlan/itemPlan.type";
 
-const emptyForm = {
-  itemId: "",
-  recurringType: "MONTH" as RecurringType,
-  recurringStartDate: "",
-  recurringEndDate: "",
+const toLocalDateInputValue = (date: Date) => {
+  const offsetMs = date.getTimezoneOffset() * 60_000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 10);
 };
 
-const normalizeDateTime = (value: string) =>
-  value.length === 16 ? `${value}:00` : value;
+const parseLocalDateInputValue = (value: string) => {
+  if (value.trim() === "") return null;
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return null;
+  return new Date(year, month - 1, day);
+};
+
+const createEmptyForm = () => ({
+  itemId: "",
+  recurringType: "MONTH" as RecurringType,
+  recurringStartDate: new Date(),
+  recurringEndDate: null as Date | null,
+});
 
 export default function ItemPlanPage() {
   const { data, isLoading } = useGetItemPlans();
   const createItemPlan = useCreateItemPlan();
   const deleteItemPlan = useDeleteItemPlan();
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState(createEmptyForm);
 
   const onSubmit = () => {
     const itemId = Number(form.itemId);
-    if (Number.isNaN(itemId) || form.recurringStartDate.trim() === "") return;
+    if (
+      Number.isNaN(itemId) ||
+      Number.isNaN(form.recurringStartDate.getTime())
+    ) {
+      return;
+    }
 
     createItemPlan.mutate(
       {
         itemId,
         recurringType: form.recurringType,
-        recurringStartDate: normalizeDateTime(form.recurringStartDate),
+        recurringStartDate: toLocalDateInputValue(form.recurringStartDate),
         recurringEndDate: form.recurringEndDate
-          ? normalizeDateTime(form.recurringEndDate)
+          ? toLocalDateInputValue(form.recurringEndDate)
           : undefined,
       },
-      { onSuccess: () => setForm(emptyForm) }
+      { onSuccess: () => setForm(createEmptyForm()) }
     );
   };
 
@@ -64,17 +78,26 @@ export default function ItemPlanPage() {
             <option value="MONTH">MONTH</option>
           </select>
           <Input
-            type="datetime-local"
-            value={form.recurringStartDate}
-            onChange={(event) =>
-              setForm({ ...form, recurringStartDate: event.target.value })
-            }
+            type="date"
+            value={toLocalDateInputValue(form.recurringStartDate)}
+            onChange={(event) => {
+              const nextDate = parseLocalDateInputValue(event.target.value);
+              if (!nextDate) return;
+              setForm({ ...form, recurringStartDate: nextDate });
+            }}
           />
           <Input
-            type="datetime-local"
-            value={form.recurringEndDate}
+            type="date"
+            value={
+              form.recurringEndDate
+                ? toLocalDateInputValue(form.recurringEndDate)
+                : ""
+            }
             onChange={(event) =>
-              setForm({ ...form, recurringEndDate: event.target.value })
+              setForm({
+                ...form,
+                recurringEndDate: parseLocalDateInputValue(event.target.value),
+              })
             }
           />
         </div>
