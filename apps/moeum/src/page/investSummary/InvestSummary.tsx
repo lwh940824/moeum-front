@@ -1,6 +1,8 @@
 ﻿import { Button, Input } from "@moeum/ui";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useGetInvestSummaries } from "../../service/api/investSummary/investSummary.queries";
+
+const formatAmount = (value: number) => value.toLocaleString();
 
 export default function InvestSummaryPage() {
   const [investSettingId, setInvestSettingId] = useState("");
@@ -8,11 +10,52 @@ export default function InvestSummaryPage() {
 
   const summaries = useGetInvestSummaries(submittedId);
 
+  const groupedSummaries = useMemo(() => {
+    const map = new Map<
+      number,
+      { monthMap: Map<number, number>; minMonth: number; maxMonth: number; total: number }
+    >();
+
+    (summaries.data ?? []).forEach((summary) => {
+      const existing = map.get(summary.year);
+      if (existing) {
+        existing.monthMap.set(summary.month, summary.principal);
+        existing.minMonth = Math.min(existing.minMonth, summary.month);
+        existing.maxMonth = Math.max(existing.maxMonth, summary.month);
+        existing.total += summary.principal;
+        return;
+      }
+
+      map.set(summary.year, {
+        monthMap: new Map([[summary.month, summary.principal]]),
+        minMonth: summary.month,
+        maxMonth: summary.month,
+        total: summary.principal,
+      });
+    });
+
+    return Array.from(map.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([year, info]) => {
+        const months = Array.from(
+          { length: info.maxMonth - info.minMonth + 1 },
+          (_, index) => info.minMonth + index
+        );
+
+        return {
+          year,
+          months,
+          monthMap: info.monthMap,
+          total: info.total,
+        };
+      });
+  }, [summaries.data]);
+
   return (
-    <div className="w-full max-w-4xl flex flex-col gap-6">
+    <div className="w-full max-w-5xl flex flex-col gap-6">
       <section className="border rounded p-4 flex flex-col gap-3">
         <div className="text-lg font-semibold">Invest Summary</div>
-        <div className="flex gap-3">
+        <div className="flex flex-col md:flex-row gap-3">
           <Input
             placeholder="Invest Setting Id"
             value={investSettingId}
@@ -29,16 +72,59 @@ export default function InvestSummaryPage() {
         </div>
       </section>
 
-      <section className="border rounded p-4 flex flex-col gap-3">
+      <section className="border rounded p-4 flex flex-col gap-4">
         <div className="text-lg font-semibold">Summaries</div>
         {summaries.isLoading ? (
           <div>Loading...</div>
+        ) : groupedSummaries.length === 0 ? (
+          <div className="text-sm text-muted-foreground">No data</div>
         ) : (
-          <div className="flex flex-col gap-2">
-            {(summaries.data ?? []).map((summary) => (
-              <div key={summary.id} className="border rounded p-3">
-                <div className="font-medium">
-                  {summary.year}-{summary.month} {summary.principal}
+          <div className="flex flex-col gap-4">
+            {groupedSummaries.map((group) => (
+              <div key={group.year} className="rounded border bg-muted/10 p-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-row md:flex-col items-center gap-3 md:gap-2 min-w-[140px]">
+                    <div className="h-12 w-12 rounded-full border-2 border-muted-foreground/40 bg-white text-sm font-semibold flex items-center justify-center">
+                      {group.year}
+                    </div>
+                    <div className="hidden md:block w-full border rounded-full px-3 py-1 text-center text-sm">
+                      카테고리명
+                    </div>
+                    <div className="hidden md:block w-full border rounded-full px-3 py-1 text-center text-sm">
+                      총합계
+                    </div>
+                  </div>
+                  <div className="flex-1 overflow-auto">
+                    <table className="w-full border-collapse text-center text-sm">
+                      <thead>
+                        <tr>
+                          <th className="border bg-muted/20 px-3 py-2 min-w-[80px]">구분</th>
+                          {group.months.map((month) => (
+                            <th key={month} className="border bg-muted/20 px-3 py-2 min-w-[90px]">
+                              {month}월
+                            </th>
+                          ))}
+                          <th className="border bg-muted/20 px-3 py-2 min-w-[90px]">합계</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td className="border bg-white px-3 py-2 font-medium">합계</td>
+                          {group.months.map((month) => {
+                            const value = group.monthMap.get(month);
+                            return (
+                              <td key={month} className="border bg-white px-3 py-2">
+                                {value == null ? "-" : formatAmount(value)}
+                              </td>
+                            );
+                          })}
+                          <td className="border bg-white px-3 py-2 font-semibold">
+                            {formatAmount(group.total)}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             ))}
@@ -48,3 +134,4 @@ export default function InvestSummaryPage() {
     </div>
   );
 }
+

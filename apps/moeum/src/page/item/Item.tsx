@@ -1,4 +1,12 @@
-﻿import { Button, Input } from "@moeum/ui";
+import {
+  Button,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@moeum/ui";
 import { useMemo, useState } from "react";
 import {
   useCreateItem,
@@ -6,6 +14,8 @@ import {
   useGetItems,
   useUpdateItem,
 } from "../../service/api/item/item.queries";
+import { useGetCategoryTree } from "../../service/api/category/category.queries";
+import { useGetPayments } from "../../service/api/payment/payment.queries";
 
 const emptyForm = {
   amount: "",
@@ -20,6 +30,8 @@ const normalizeDateTime = (value: string) =>
 
 export default function ItemPage() {
   const { data, isLoading } = useGetItems();
+  const { data: categoryTree, isLoading: isCategoryLoading } = useGetCategoryTree();
+  const { data: payments, isLoading: isPaymentLoading } = useGetPayments();
   const createItem = useCreateItem();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -76,6 +88,31 @@ export default function ItemPage() {
   };
 
   const rows = useMemo(() => data ?? [], [data]);
+  const categoryOptions = useMemo(() => {
+    const options: { id: number; label: string }[] = [];
+
+    (categoryTree ?? []).forEach((parent) => {
+      if (parent.children?.length) {
+        parent.children.forEach((child) => {
+          options.push({ id: child.id, label: `${parent.name} / ${child.name}` });
+        });
+        return;
+      }
+
+      options.push({ id: parent.id, label: parent.name });
+    });
+
+    return options;
+  }, [categoryTree]);
+  const paymentOptions = useMemo(() => {
+    const options: { id: number; label: string }[] = [];
+
+    (payments ?? []).forEach((payment) => {
+      options.push({ id: payment.id, label: payment.name });
+    });
+
+    return options;
+  }, [payments]);
 
   return (
     <div className="w-full max-w-4xl flex flex-col gap-6">
@@ -89,20 +126,50 @@ export default function ItemPage() {
             value={form.amount}
             onChange={(event) => setForm({ ...form, amount: event.target.value })}
           />
-          <Input
-            placeholder="Category Id"
+          <Select
             value={form.categoryId}
-            onChange={(event) =>
-              setForm({ ...form, categoryId: event.target.value })
-            }
-          />
-          <Input
-            placeholder="Payment Id"
+            onValueChange={(value) => setForm({ ...form, categoryId: value })}
+            disabled={isCategoryLoading || categoryOptions.length === 0}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categoryOptions.length === 0 ? (
+                <SelectItem value="__empty" disabled>
+                  {isCategoryLoading ? "Loading..." : "No categories"}
+                </SelectItem>
+              ) : (
+                categoryOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.id.toString()}>
+                    {option.label}
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
+          <Select
             value={form.paymentId}
-            onChange={(event) =>
-              setForm({ ...form, paymentId: event.target.value })
-            }
-          />
+            onValueChange={(value) => setForm({ ...form, paymentId: value })}
+            disabled={isPaymentLoading || paymentOptions.length === 0}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Payment" />
+            </SelectTrigger>
+            <SelectContent>
+              {paymentOptions.length === 0 ? (
+                <SelectItem value="__empty" disabled>
+                  {isPaymentLoading ? "Loading..." : "No payments"}
+                </SelectItem>
+              ) : (
+                paymentOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.id.toString()}>
+                    {option.label}
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
           <Input
             type="datetime-local"
             value={form.occurredAt}

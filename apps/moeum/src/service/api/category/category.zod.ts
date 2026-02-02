@@ -5,6 +5,7 @@ export const categoryResponseSchema = z.object({
     name: z.string(),
     categoryType: z.enum(["INCOME", "EXPENSE"]),
     imageUrl: z.string(),
+    investmentYn: z.string(),
     children: z.array(z.object({
         id: z.number(),
         name: z.string(),

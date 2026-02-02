@@ -4,12 +4,14 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { CategoryApi } from "../../service/api/category";
 import { useCreateCategory, useGetCategoryTree } from "../../service/api/category/category.queries";
 import type { CategoryCreateRequest, CategoryResponse, CategoryType } from "../../service/api/category/category.type";
+import type { YnType } from "@moeum/api";
 
 const buildEmptyForm = () => ({
   name: "",
   categoryType: "EXPENSE" as CategoryType,
   imageUrl: "",
   parentCategoryId: "",
+  investmentYn: "N" as YnType,
 });
 
 export default function Category() {
@@ -49,6 +51,7 @@ export default function Category() {
       name: form.name.trim(),
       imageUrl: form.imageUrl.trim(),
       categoryType: form.categoryType,
+      investmentYn: form.investmentYn,
     };
 
     const parentId = Number(form.parentCategoryId);
@@ -125,6 +128,10 @@ export default function Category() {
               지출
             </ToggleGroupItem>
           </ToggleGroup>
+          <Input 
+            type="text"
+            onChange={(event) => setForm({...form, investmentYn: event.target.value as YnType})}
+          />
         </div>
         <Button onClick={onSubmit} disabled={createCategory.isPending}>
           Create

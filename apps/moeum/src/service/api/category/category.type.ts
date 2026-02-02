@@ -7,6 +7,7 @@ export interface CategoryCreateRequest {
     name: string;
     categoryType: CategoryType;
     imageUrl: string;
+    investmentYn: YnType;
 }
 
 export interface CategoryUpdateRequest {
