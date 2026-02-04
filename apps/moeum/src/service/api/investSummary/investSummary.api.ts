@@ -1,7 +1,7 @@
 ﻿import { api } from "@moeum/api";
-import type { InvestSummaryResponse } from "./investSummary.type";
+import type { InvestSummaryYearResponse } from "./investSummary.type";
 
 export const InvestSummaryApi = {
-  getInvestSummaries: (investSettingId: number) =>
-    api.get<InvestSummaryResponse[]>(`/invest-summary/${investSettingId}`),
+  getInvestSummaryYears: (investSettingId: number) =>
+    api.get<InvestSummaryYearResponse[]>(`/invest-summary/${investSettingId}/years`),
 };

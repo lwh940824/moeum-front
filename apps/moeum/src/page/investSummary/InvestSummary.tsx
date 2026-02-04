@@ -1,6 +1,6 @@
 ﻿import { Button, Input } from "@moeum/ui";
 import { useMemo, useState } from "react";
-import { useGetInvestSummaries } from "../../service/api/investSummary/investSummary.queries";
+import { useGetInvestSummaryYears } from "../../service/api/investSummary/investSummary.queries";
 
 const formatAmount = (value: number) => value.toLocaleString();
 
@@ -8,47 +8,24 @@ export default function InvestSummaryPage() {
   const [investSettingId, setInvestSettingId] = useState("");
   const [submittedId, setSubmittedId] = useState(0);
 
-  const summaries = useGetInvestSummaries(submittedId);
+  const summaries = useGetInvestSummaryYears(submittedId);
 
   const groupedSummaries = useMemo(() => {
-    const map = new Map<
-      number,
-      { monthMap: Map<number, number>; minMonth: number; maxMonth: number; total: number }
-    >();
-
-    (summaries.data ?? []).forEach((summary) => {
-      const existing = map.get(summary.year);
-      if (existing) {
-        existing.monthMap.set(summary.month, summary.principal);
-        existing.minMonth = Math.min(existing.minMonth, summary.month);
-        existing.maxMonth = Math.max(existing.maxMonth, summary.month);
-        existing.total += summary.principal;
-        return;
-      }
-
-      map.set(summary.year, {
-        monthMap: new Map([[summary.month, summary.principal]]),
-        minMonth: summary.month,
-        maxMonth: summary.month,
-        total: summary.principal,
-      });
-    });
-
-    return Array.from(map.entries())
-      .sort((a, b) => a[0] - b[0])
-      .map(([year, info]) => {
-        const months = Array.from(
-          { length: info.maxMonth - info.minMonth + 1 },
-          (_, index) => info.minMonth + index
-        );
+    return (summaries.data ?? [])
+      .map((yearSummary) => {
+        const sortedMonths = [...yearSummary.months].sort((a, b) => a.month - b.month);
+        const monthMap = new Map(sortedMonths.map((item) => [item.month, item.principal]));
+        const months = sortedMonths.map((item) => item.month);
+        const total = yearSummary.totalPrincipal ?? 0;
 
         return {
-          year,
+          year: yearSummary.year,
           months,
-          monthMap: info.monthMap,
-          total: info.total,
+          monthMap,
+          total,
         };
-      });
+      })
+      .sort((a, b) => a.year - b.year);
   }, [summaries.data]);
 
   return (

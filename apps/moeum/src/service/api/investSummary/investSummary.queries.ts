@@ -1,9 +1,9 @@
 ﻿import { useQuery } from "@tanstack/react-query";
 import { InvestSummaryApi } from "./investSummary.api";
 
-export const useGetInvestSummaries = (investSettingId: number) =>
+export const useGetInvestSummaryYears = (investSettingId: number) =>
   useQuery({
-    queryKey: ["invest-summaries", investSettingId],
-    queryFn: () => InvestSummaryApi.getInvestSummaries(investSettingId),
+    queryKey: ["invest-summaries", investSettingId, "years"],
+    queryFn: () => InvestSummaryApi.getInvestSummaryYears(investSettingId),
     enabled: !!investSettingId,
   });

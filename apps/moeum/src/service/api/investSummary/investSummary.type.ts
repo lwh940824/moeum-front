@@ -1,6 +1,10 @@
-﻿export interface InvestSummaryResponse {
-  id: number;
+export interface InvestSummaryYearResponse {
   year: number;
+  months: InvestSummaryMonthResponse[];
+  totalPrincipal: number;
+}
+
+export interface InvestSummaryMonthResponse {
   month: number;
-  principal: number;
+  principal: number | null;
 }
